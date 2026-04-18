@@ -1,0 +1,428 @@
+/******************************************************************************
+ * # الملف: content/content_style.css
+ * # الغرض: أنماط العناصر التي تحقنها الإضافة في الصفحة.
+ ******************************************************************************/
+
+.moterjem-alzanad-popover {
+    position: absolute;
+    z-index: 2147483647; /* أعلى قيمة ممكنة ليظهر فوق كل شيء */
+    width: 350px;
+    max-width: 90vw;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #ecf0f1;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    direction: rtl;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.moterjem-alzanad-popover.pinned {
+    border-color: #4CAF50 !important;
+    box-shadow: 0 12px 48px rgba(76, 175, 80, 0.4) !important;
+    position: fixed !important;
+}
+
+.moterjem-alzanad-popover .popover-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.moterjem-alzanad-popover .popover-header span {
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.moterjem-alzanad-popover .popover-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.moterjem-alzanad-popover .popover-pin,
+.moterjem-alzanad-popover .popover-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #ffffff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.moterjem-alzanad-popover .popover-pin:hover,
+.moterjem-alzanad-popover .popover-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.moterjem-alzanad-popover .popover-pin.pinned {
+    background: #4CAF50 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.6);
+    border: 2px solid #4CAF50;
+}
+
+.moterjem-alzanad-popover .popover-content {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    overflow-y: auto;
+    max-height: 300px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.moterjem-alzanad-popover .popover-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.moterjem-alzanad-popover .popover-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.moterjem-alzanad-popover .popover-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.moterjem-alzanad-popover .popover-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.moterjem-alzanad-popover .popover-loading {
+    text-align: center;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.moterjem-alzanad-popover .loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 12px;
+}
+
+.moterjem-alzanad-popover .popover-translation {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 60px; /* مساحة للأزرار الثابتة */
+    color: #ffffff;
+    line-height: 1.5;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.moterjem-alzanad-popover .popover-original {
+    display: none; /* إخفاء النص الأصلي */
+}
+
+.moterjem-alzanad-popover .popover-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    position: sticky;
+    bottom: 0;
+    background: rgba(30, 60, 114, 0.9);
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0 0 12px 12px;
+    backdrop-filter: blur(10px);
+}
+
+.moterjem-alzanad-popover .popover-replace-btn,
+.moterjem-alzanad-popover .popover-copy-btn {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.moterjem-alzanad-popover .popover-replace-btn:hover,
+.moterjem-alzanad-popover .popover-copy-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.moterjem-alzanad-popover .popover-copy-btn {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    min-width: 40px;
+    flex: 0 0 auto;
+}
+
+.moterjem-alzanad-popover .popover-copy-btn:hover {
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.moterjem-alzanad-popover .popover-error {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    border-radius: 6px;
+    padding: 12px;
+    color: #ffcdd2;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.moterjem-alzanad-popover .popover-success {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #4CAF50;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+/* تأثيرات الظهور */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* إزالة الأنماط المتعارضة */
+.moterjem-alzanad-popover * {
+    box-sizing: border-box;
+}
+
+/* تحسينات للجوال */
+@media (max-width: 480px) {
+    .moterjem-alzanad-popover {
+        width: 320px;
+        max-width: 95vw;
+    }
+}
+
+/* =============================================================================
+ * # أنماط الترجمة الثنائية (Dual Mode) - مستوحاة من Immersive Translate
+ * ============================================================================= */
+
+/* المتغيرات اللونية للأنماط */
+:root {
+    --tarjoman-primary-color: #1e3c72;
+    --tarjoman-secondary-color: #2a5298;
+    --tarjoman-translation-color: #37588a;
+    --tarjoman-separator-color: rgba(0, 0, 0, 0.1);
+    
+    /* ألوان الأنماط المختلفة */
+    --tarjoman-theme-underline-color: #1e3c72;
+    --tarjoman-theme-dashed-color: #ff374f;
+    --tarjoman-theme-dotted-color: #94a3b8;
+    --tarjoman-theme-wavy-color: #72ece9;
+    --tarjoman-theme-highlight-bg: rgba(251, 218, 65, 0.3);
+    --tarjoman-theme-marker-bg: #fbda41;
+    --tarjoman-theme-grey-color: #2f4f4f;
+}
+
+/* غلاف الترجمة الرئيسي */
+.tarjoman-target-wrapper {
+    display: inline;
+    white-space: pre-wrap;
+    unicode-bidi: isolate;
+}
+
+/* غلاف الترجمة مع اتجاه RTL */
+.tarjoman-target-wrapper[dir="rtl"] {
+    text-align: right;
+}
+
+/* حاوية الترجمة الموحدة (للحفاظ على موضع النص) */
+.tarjoman-dual-container,
+.tarjoman-translation-container {
+    display: inline;
+    white-space: pre-wrap;
+}
+
+/* النص الأصلي في الوضع الثنائي */
+.tarjoman-source-text {
+    display: inline;
+}
+
+/* الفاصل بين النص الأصلي والترجمة */
+.tarjoman-separator {
+    display: inline;
+    opacity: 0.5;
+    margin: 0 4px;
+}
+
+/* النص الداخلي للترجمة */
+.tarjoman-translation-inner {
+    display: inline;
+    color: var(--tarjoman-translation-color);
+    opacity: 0.95;
+    transition: opacity 0.2s ease;
+}
+
+.tarjoman-translation-inner:hover {
+    opacity: 1;
+}
+
+/* غلاف المصدر (للوضع translation-only) */
+.tarjoman-source-wrapper {
+    display: inline;
+}
+
+.tarjoman-source-wrapper.tarjoman-hidden {
+    display: none;
+}
+
+/* وضع الترجمة فقط */
+.tarjoman-translation-only {
+    display: inline;
+}
+
+/* =============================================================================
+ * # أنماط التمييز البصري للترجمات (Themes)
+ * ============================================================================= */
+
+/* النمط: الخط التحتي */
+.tarjoman-theme-underline {
+    border-bottom: 1px solid var(--tarjoman-theme-underline-color) !important;
+    padding-bottom: 1px;
+}
+
+/* النمط: الخط المتقطع */
+.tarjoman-theme-dashed {
+    background: linear-gradient(
+        to right,
+        var(--tarjoman-theme-dashed-color) 0%,
+        var(--tarjoman-theme-dashed-color) 50%,
+        transparent 50%,
+        transparent 100%
+    ) repeat-x left bottom;
+    background-size: 8px 2px;
+    padding-bottom: 2px;
+}
+
+/* النمط: الخط المنقط */
+.tarjoman-theme-dotted {
+    background-image: linear-gradient(
+        to right,
+        var(--tarjoman-theme-dotted-color) 30%,
+        rgba(255, 255, 255, 0) 0%
+    );
+    background-position: bottom;
+    background-size: 5px 1px;
+    background-repeat: repeat-x;
+    padding-bottom: 3px;
+}
+
+/* النمط: الخط المتموج */
+.tarjoman-theme-wavy {
+    text-decoration: underline !important;
+    text-decoration-color: var(--tarjoman-theme-wavy-color) !important;
+    text-decoration-style: wavy !important;
+    text-underline-offset: 3px;
+}
+
+/* النمط: التظليل */
+.tarjoman-theme-highlight {
+    background: var(--tarjoman-theme-highlight-bg);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+/* النمط: التحديد بالقلم */
+.tarjoman-theme-marker {
+    background: linear-gradient(
+        to right,
+        rgba(251, 218, 65, 0.1),
+        rgba(251, 218, 65, 0.9) 3%,
+        rgba(251, 218, 65, 0.9) 35%,
+        rgba(251, 218, 65, 0.9) 70%,
+        rgba(251, 218, 65, 0.8) 95%,
+        rgba(251, 218, 65, 0.1)
+    );
+    padding: 2px 0;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+/* النمط: الرمادي */
+.tarjoman-theme-grey {
+    color: var(--tarjoman-theme-grey-color) !important;
+    font-style: italic;
+}
+
+/* =============================================================================
+ * # تحسينات إضافية
+ * ============================================================================= */
+
+/* منع التأثير على العناصر المميزة بعدم الترجمة */
+[translate="no"] .tarjoman-target-wrapper,
+.no-translate .tarjoman-target-wrapper {
+    display: none;
+}
+
+/* دعم الوضع الداكن */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tarjoman-translation-color: #7fa8d4;
+        --tarjoman-theme-grey-color: #b0b0b0;
+    }
+}
+
+/* تحسين القراءة في الفقرات */
+p .tarjoman-target-wrapper,
+li .tarjoman-target-wrapper,
+td .tarjoman-target-wrapper,
+th .tarjoman-target-wrapper {
+    line-height: inherit;
+}
+
+/* تجنب كسر الكلمات */
+.tarjoman-translation-inner {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}

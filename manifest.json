@@ -1,0 +1,75 @@
+{
+  "manifest_version": 3,
+  "name": "تَرجمان الزَّنَاد",
+  "version": "1.0.0",
+  "description": "تَرجمان فوري للنصوص العربية والإنجليزية ",
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "scripting"
+  ],
+  
+  "background": {
+    "service_worker": "background/service_worker.js",
+    "type": "module"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "content/modules/database.js",
+        "content/modules/constants.js",
+        "content/modules/utilities.js",
+        "content/modules/text_collector.js",
+        "content/modules/translation_applier.js",
+        "content/modules/batch_translator.js",
+        "content/modules/observer.js",
+        "content/modules/main_translator.js",
+        "content/modules/popup_manager.js",
+        "content/modules/keyboard_handler.js",
+        "content/modules/theme_manager.js",
+        "content/content_script.js"
+      ],
+      "css": ["content/content_style.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/rtl_injector.js"],
+      "css": ["content/rtl_override.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "ui/popup/popup.html",
+    "default_icon": {
+      "48": "icons/icon48.png"
+    }
+  },
+  
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon48.png"
+  },
+  
+  "options_ui": {
+    "page": "ui/options/options.html",
+    "open_in_tab": true
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/*.png", 
+        "content/*.css", 
+        "content/modules/*.js",
+        "content/workers/translation_worker.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

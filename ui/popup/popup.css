@@ -1,0 +1,36 @@
+:root { 
+    --primary-color: #37588a; 
+    --secondary-color: #89a5d6; 
+    --accent-color: #37588a; 
+    --hover-color: #4a6fa3;
+    --shadow-color: #2a4570;
+    --bg-color: #0d1117; 
+    --card-bg: #1c2128; 
+    --border-color: #2a4570; 
+    --text-color: #ecf0f1; 
+    --text-color-secondary: #bdc3c7; 
+}
+body { font-family: 'Segoe UI', Tahoma, sans-serif; width: 360px; margin: 0; background-color: var(--bg-color); color: var(--text-color); direction: rtl; }
+.popup-container { display: flex; flex-direction: column; }
+.popup-header { background: var(--primary-color); color: white; padding: 16px 20px; text-align: center; }
+.popup-header h1 { font-size: 18px; font-weight: 600; margin: 0; }
+.popup-content { padding: 16px; }
+.form-section { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-color-secondary); margin-bottom: 6px; }
+select { width: 100%; padding: 10px; font-size: 14px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); appearance: none; }
+.controls-section { background-color: var(--card-bg); padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+.control-item { display: flex; align-items: center; justify-content: space-between; }
+.control-item + .control-item { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); }
+.control-item span { font-weight: 500; font-size: 13px; }
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--secondary-color); transition: .4s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--accent-color); }
+input:checked + .slider:before { transform: translateX(20px); }
+.action-button { width: 100%; padding: 12px; font-size: 16px; font-weight: 600; color: white; background: var(--primary-color); border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px var(--shadow-color); }
+.action-button:hover { background-color: var(--hover-color); box-shadow: 0 4px 8px var(--shadow-color); }
+.icon-button { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
+.icon-button:hover { background-color: var(--secondary-color); }
+.icon-button svg { width: 22px; height: 22px; fill: var(--text-color-secondary); }
+.popup-footer { padding: 8px 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; }

@@ -1,0 +1,66 @@
+/* أنماط RTL المحسنة - مع الحفاظ على العناصر المتوسطة */
+
+html[dir="rtl"] {
+    direction: rtl !important;
+}
+
+body.moterjem-alzanad-rtl-active {
+    direction: rtl !important;
+}
+
+/* تطبيق RTL على العناصر */
+body.moterjem-alzanad-rtl-active *:not(input[type="password"]):not(input[type="email"]):not(input[type="url"]):not(code):not(pre):not(script):not(style) {
+    direction: rtl !important;
+}
+
+/* ===== الحفاظ على العناصر المتوسطة - أولوية عالية ===== */
+body.moterjem-alzanad-rtl-active .text-center,
+body.moterjem-alzanad-rtl-active .center,
+body.moterjem-alzanad-rtl-active .mx-auto,
+body.moterjem-alzanad-rtl-active .text-md-center,
+body.moterjem-alzanad-rtl-active .text-lg-center,
+body.moterjem-alzanad-rtl-active .text-xl-center,
+body.moterjem-alzanad-rtl-active .text-sm-center,
+body.moterjem-alzanad-rtl-active [style*="text-align: center"],
+body.moterjem-alzanad-rtl-active [style*="text-align:center"],
+body.moterjem-alzanad-rtl-active [class*="justify-center"],
+body.moterjem-alzanad-rtl-active [class*="items-center"],
+body.moterjem-alzanad-rtl-active [class*="justify-content-center"],
+body.moterjem-alzanad-rtl-active [class*="align-items-center"],
+body.moterjem-alzanad-rtl-active [class*="d-flex"][class*="center"],
+body.moterjem-alzanad-rtl-active [class*="flex"][class*="center"] {
+    text-align: center !important;
+}
+
+/* تجاوز text-align: left فقط للعناصر غير المتوسطة */
+body.moterjem-alzanad-rtl-active [style*="text-align: left"]:not(.text-center):not([class*="center"]):not([style*="center"]),
+body.moterjem-alzanad-rtl-active [style*="text-align:left"]:not(.text-center):not([class*="center"]):not([style*="center"]),
+body.moterjem-alzanad-rtl-active [style*="text-align: start"]:not(.text-center):not([class*="center"]):not([style*="center"]),
+body.moterjem-alzanad-rtl-active [style*="text-align:start"]:not(.text-center):not([class*="center"]):not([style*="center"]) {
+    text-align: right !important;
+}
+
+/* تجاوز direction: ltr */
+body.moterjem-alzanad-rtl-active [dir="ltr"],
+body.moterjem-alzanad-rtl-active [style*="direction: ltr"],
+body.moterjem-alzanad-rtl-active [style*="direction:ltr"] {
+    direction: rtl !important;
+}
+
+/* تخصيص الحقول النصية */
+body.moterjem-alzanad-rtl-active input[type="text"],
+body.moterjem-alzanad-rtl-active input[type="search"],
+body.moterjem-alzanad-rtl-active textarea {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* تجاوز فئات Bootstrap - فقط للعناصر غير المتوسطة */
+body.moterjem-alzanad-rtl-active .text-left:not(.text-center),
+body.moterjem-alzanad-rtl-active .text-start:not(.text-center) {
+    text-align: right !important;
+}
+
+body.moterjem-alzanad-rtl-active .ltr {
+    direction: rtl !important;
+}
