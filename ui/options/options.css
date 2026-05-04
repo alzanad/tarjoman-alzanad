@@ -62,9 +62,8 @@ select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px s
 /* تحسين القائمة المنسدلة للغات */
 #favorite-lang-select {
     height: auto;
-    max-height: 200px; /* ارتفاع يكفي لعرض 7 خيارات تقريباً */
+    max-height: 200px;
     overflow-y: auto;
-    size: 7; /* عرض 7 خيارات مرئية */
     padding: 8px;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-color) var(--card-bg);
@@ -297,7 +296,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .translate-field textarea {
-    min-height: 120px;
+    min-height: 300px;
     resize: vertical;
     padding: 12px;
     font-size: 15px;
@@ -363,25 +362,22 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .copy-btn {
-    position: absolute;
-    left: 8px;
-    bottom: 8px;
-    padding: 6px 12px;
+    align-self: flex-end;
+    margin-top: 12px;
+    padding: 8px 16px;
     background-color: var(--secondary-color);
     color: var(--bg-color);
     border: none;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    opacity: 0.8;
 }
 
 .copy-btn:hover {
     background-color: var(--hover-color);
     color: white;
-    opacity: 1;
 }
 
 .copy-btn.copied {
