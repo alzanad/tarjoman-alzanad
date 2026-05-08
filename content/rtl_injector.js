@@ -1,7 +1,7 @@
 /******************************************************************************
  * # الملف: content/rtl_injector.js
- * # الغرض: حقن RTL الموثوق والمستمر بعد تحميل الصفحة
- * # المسؤولية الكاملة: تطبيق RTL عند تفعيله في الإعدادات
+ * # الغرض: حقن RTL الموثوق والمستمر بعد تحميل الصفحة (مع دعم SPA)
+ * # المسؤولية الكاملة: تطبيق RTL عند تفعيله في الإعدادات والحفاظ عليه
  ******************************************************************************/
 
 (function() {
@@ -10,6 +10,7 @@
     let isRtlActive = false;
     let isLocalOverride = false; // هل RTL مُفعَّل محلياً (بغض النظر عن الإعدادات)
     let observer = null;
+    let lastUrl = location.href;
     
     // انتظار اكتمال تحميل الصفحة
     if (document.readyState === 'loading') {
@@ -31,6 +32,52 @@
                 }
             }
         });
+        
+        // بدء مراقبة التنقل في تطبيقات الصفحة الواحدة (SPA)
+        watchNavigation();
+    }
+
+    /**
+     * مراقبة التنقل في تطبيقات الصفحة الواحدة (SPA)
+     */
+    function watchNavigation() {
+        // رصد أحداث المتصفح
+        window.addEventListener('popstate', handleSpaNavigation);
+        window.addEventListener('hashchange', handleSpaNavigation);
+        
+        // Polling خفيف للتنقلات التي تتم عبر pushState
+        setInterval(() => {
+            if (location.href !== lastUrl) {
+                handleSpaNavigation();
+            }
+        }, 1000);
+    }
+
+    /**
+     * معالجة تغيير URL في SPA
+     */
+    function handleSpaNavigation() {
+        lastUrl = location.href;
+        
+        // إعادة فحص الحالة وتطبيق RTL إذا لزم الأمر
+        chrome.storage.local.get({ globalRtlEnabled: false, rtlExcludedSites: [] }, (result) => {
+            const isExcluded = isCurrentSiteExcluded(result.rtlExcludedSites);
+            const shouldBeActive = (result.globalRtlEnabled && !isExcluded) || isLocalOverride;
+            
+            if (shouldBeActive) {
+                if (!isRtlActive) {
+                    if (!isSiteRtlEnabled()) {
+                        applyRtlStyles();
+                    }
+                } else {
+                    // إذا كان نشطاً بالفعل، تأكد من أن العناصر الأساسية لا تزال تحمل الأنماط
+                    // (لأن بعض تطبيقات SPA قد تعيد بناء الجسم بالكامل)
+                    ensureBaseRtlAttributes();
+                }
+            } else if (isRtlActive && !isLocalOverride) {
+                removeRtlStyles();
+            }
+        });
     }
 
     /**
@@ -39,7 +86,7 @@
     function isCurrentSiteExcluded(excludedSites) {
         try {
             const currentHostname = window.location.hostname.replace(/^www\./, '');
-            return excludedSites.some(site => 
+            return (excludedSites || []).some(site => 
                 currentHostname === site || currentHostname.endsWith('.' + site)
             );
         } catch (e) {
@@ -94,7 +141,10 @@
      * تطبيق أنماط RTL الشاملة
      */
     function applyRtlStyles() {
-        if (isRtlActive) return; // تجنب التطبيق المتكرر
+        if (isRtlActive) {
+            ensureBaseRtlAttributes();
+            return;
+        }
         
         isRtlActive = true;
         
@@ -109,17 +159,33 @@
     }
 
     /**
+     * ضمان وجود سمات RTL الأساسية (للـ SPA والحماية من المسح)
+     */
+    function ensureBaseRtlAttributes() {
+        if (!isRtlActive) return;
+
+        // ضمان dir على html
+        if (document.documentElement.getAttribute('dir') !== 'rtl') {
+            document.documentElement.setAttribute('dir', 'rtl');
+        }
+
+        // ضمان class و style على body
+        if (document.body) {
+            if (!document.body.classList.contains('moterjem-alzanad-rtl-active')) {
+                document.body.classList.add('moterjem-alzanad-rtl-active');
+            }
+            if (document.body.style.direction !== 'rtl') {
+                document.body.style.setProperty('direction', 'rtl', 'important');
+            }
+        }
+    }
+
+    /**
      * تطبيق RTL على العناصر الأساسية
      */
     function applyRtlToElements() {
-        // تطبيق على html
-        document.documentElement.setAttribute('dir', 'rtl');
-        
-        // تطبيق على body
-        if (document.body) {
-            document.body.classList.add('moterjem-alzanad-rtl-active');
-            document.body.style.setProperty('direction', 'rtl', 'important');
-        }
+        // تطبيق على العناصر الأساسية أولاً
+        ensureBaseRtlAttributes();
         
         // تطبيق على العناصر الموجودة مع الحفاظ على العناصر المتوسطة
         const elements = document.querySelectorAll('*');
@@ -266,7 +332,7 @@
     }
 
     /**
-     * مراقبة العناصر الجديدة المضافة
+     * مراقبة العناصر الجديدة والتغييرات في DOM
      */
     function observeNewElements() {
         if (observer) {
@@ -274,20 +340,41 @@
         }
         
         observer = new MutationObserver((mutations) => {
+            let shouldRecheckBase = false;
+
             mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                if (mutation.type === 'childList') {
                     mutation.addedNodes.forEach((node) => {
                         if (node.nodeType === Node.ELEMENT_NODE) {
+                            if (node.tagName === 'BODY' || node.tagName === 'HEAD') {
+                                shouldRecheckBase = true;
+                            }
                             applyRtlToNewElement(node);
                         }
                     });
+                } else if (mutation.type === 'attributes') {
+                    // حماية سماتنا من المسح من قبل الموقع
+                    if (mutation.target === document.documentElement || mutation.target === document.body) {
+                        shouldRecheckBase = true;
+                    }
                 }
             });
+
+            if (shouldRecheckBase && isRtlActive) {
+                ensureBaseRtlAttributes();
+                // إذا تم استبدال الرأس، قد نحتاج لإعادة حقن الأنماط
+                if (!document.getElementById('moterjem-alzanad-rtl-styles')) {
+                    injectRtlStyles();
+                }
+            }
         });
         
-        observer.observe(document.body, {
+        // مراقبة documentElement بدلاً من body للتعامل مع استبدال body في SPA
+        observer.observe(document.documentElement, {
             childList: true,
-            subtree: true
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['dir', 'class', 'style']
         });
     }
 
@@ -297,7 +384,10 @@
     function applyRtlToNewElement(element) {
         if (shouldApplyRtl(element)) {
             element.style.setProperty('direction', 'rtl', 'important');
-            element.style.setProperty('text-align', 'right', 'important');
+            
+            if (!isCenteredElement(element)) {
+                element.style.setProperty('text-align', 'right', 'important');
+            }
         }
         
         // تطبيق على العناصر الفرعية
@@ -305,7 +395,9 @@
         children.forEach(child => {
             if (shouldApplyRtl(child)) {
                 child.style.setProperty('direction', 'rtl', 'important');
-                child.style.setProperty('text-align', 'right', 'important');
+                if (!isCenteredElement(child)) {
+                    child.style.setProperty('text-align', 'right', 'important');
+                }
             }
         });
     }
@@ -374,7 +466,7 @@
                 if (result.globalRtlEnabled) {
                     isLocalOverride = false;
                     if (!isCurrentSiteExcluded(result.rtlExcludedSites)) {
-                        if (!isSiteRtlEnabled()) {
+                        if (!isSiteRtlEnabled() || !isRtlActive) {
                             applyRtlStyles();
                         }
                     } else {
@@ -404,7 +496,7 @@
             if (message.enabled) {
                 isLocalOverride = false; // إعادة تعيين التجاوز المحلي
                 if (!isCurrentSiteExcluded(message.excludedSites || [])) {
-                    if (!isSiteRtlEnabled()) {
+                    if (!isSiteRtlEnabled() || !isRtlActive) {
                         applyRtlStyles();
                     }
                 } else {
