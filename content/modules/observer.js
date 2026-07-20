@@ -405,9 +405,59 @@ window.TarjomanObserver = (function() {
      * معالج حدث تغيير URL - يُستدعى عند التنقل في SPA
      * @private
      */
-    function handleUrlChange() {
+    async function handleUrlChange() {
         if (location.href !== state.lastUrl) {
+            const previousUrl = state.lastUrl;
             state.lastUrl = location.href;
+
+            const currentHostname = window.location.hostname.replace(/^www\./, '');
+
+            // فحص إعدادات الترجمة التلقائية
+            const settings = await new Promise(resolve => {
+                chrome.storage.local.get({
+                    globalTranslateEnabled: false,
+                    autoTranslateSites: [],
+                    translateExcludedSites: [],
+                    favoriteTargetLang: 'ar',
+                    translationMode: 'replace'
+                }, resolve);
+            });
+
+            const isExcluded = settings.translateExcludedSites.some(site => 
+                currentHostname === site || currentHostname.endsWith('.' + site)
+            );
+            
+            const isInAutoList = settings.autoTranslateSites.some(site => 
+                currentHostname === site || currentHostname.endsWith('.' + site)
+            );
+
+            const shouldAutoTranslate = (settings.globalTranslateEnabled && !isExcluded) || isInAutoList;
+
+            // إذا كانت الترجمة التلقائية مفعلة ولم تكن الصفحة مترجمة
+            if (shouldAutoTranslate && !state.isTranslated && !state.manualResetDomains.has(currentHostname)) {
+                // بدء الترجمة التلقائية
+                currentTargetLang = settings.favoriteTargetLang;
+                currentMode = settings.translationMode;
+                
+                // تحديث الحالة في window.TarjomanState مباشرة
+                window.TarjomanState.isTranslated = true;
+                state.isTranslated = true;
+                chrome.runtime.sendMessage({ action: 'set_icon_active' });
+                
+                // تفعيل المراقبة للمحتوى الجديد
+                observeNewContent(currentTargetLang, currentMode);
+                observeSpaNavigation(currentTargetLang, currentMode);
+                
+                // ترجمة المحتوى بعد تأخير
+                setTimeout(() => {
+                    const newItems = collector.collectTranslatableItems(document.body);
+                    if (newItems.length > 0 && currentTargetLang && currentMode) {
+                        batch.translateItems(newItems, currentMode, currentTargetLang);
+                    }
+                }, 200);
+                
+                return;
+            }
 
             // إبقاء الأيقونة مفعلة أثناء تنقل SPA طالما الترجمة لا تزال مفعلة
             if (state.isTranslated) {
